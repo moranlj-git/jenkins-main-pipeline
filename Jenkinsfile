@@ -29,7 +29,7 @@ pipeline {
                 echo 'Exécution du script principal'
                 sh '''
                     source $VENV_DIR/bin/activate
-                    python main.py
+                    python3 main.py
                     if [ $? -ne 0 ]; then
                       echo "Erreur dans main.py"
                       exit 1
