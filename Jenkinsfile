@@ -18,8 +18,8 @@ pipeline {
                 echo 'Activation et installation des dépendances'
                 sh '''
                     . $VENV_DIR/bin/activate
-                    sudo pip install --upgrade pip
-                    sudo pip install -r requirements.txt
+                    pip install --upgrade pip
+                    pip install -r requirements.txt
                 '''
             }
         }
