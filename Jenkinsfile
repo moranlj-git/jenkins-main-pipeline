@@ -9,10 +9,7 @@ pipeline {
         stage('Préparation') {
             steps {
                 echo 'Création de l’environnement virtuel'
-		sh '''
-		    sudo apt install python3-venv
-                    python3 -m venv $VENV_DIR
-		'''
+		sh 'python3 -m venv $VENV_DIR'
             }
         }
 
