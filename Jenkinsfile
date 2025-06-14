@@ -1,32 +1,58 @@
 pipeline {
     agent any
 
+    environment {
+        VENV_DIR = 'venv'
+    }
+
     stages {
-        stage('Preparation') {
+        stage('Préparation') {
             steps {
+                echo 'Création de l’environnement virtuel'
+                sh 'python3 -m venv $VENV_DIR'
+            }
+        }
+
+        stage('Install') {
+            steps {
+                echo 'Activation et installation des dépendances'
                 sh '''
-					python3 -m venv $VENV_DIR
-					. $VENV_DIR/bin/activate
-					pip install --upgrade pip
-					pip install -r requirements.txt
-				'''
+                    source $VENV_DIR/bin/activate
+                    pip install --upgrade pip
+                    pip install -r requirements.txt
+                '''
             }
         }
 
-        stage('Scraping') {
+        stage('Run') {
             steps {
-                script {
-                    sh 'python3 scraper.py'
-                }
+                echo 'Exécution du script principal'
+                sh '''
+                    source $VENV_DIR/bin/activate
+                    python main.py
+                    if [ $? -ne 0 ]; then
+                      echo "Erreur dans main.py"
+                      exit 1
+                    fi
+                '''
             }
         }
 
-        stage('Conversion') {
+        stage('Archive') {
             steps {
-                script {
-                    sh 'python3 html_generator.py'
-                }
+                echo 'Archivage des fichiers résultats'
+                archiveArtifacts artifacts: '**/*.csv', allowEmptyArchive: false
             }
         }
     }
-}	
+
+    post {
+        always {
+            echo 'Nettoyage de l’environnement virtuel'
+            sh 'rm -rf $VENV_DIR || true'
+        }
+        failure {
+            echo 'Le pipeline a échoué — consultez les logs.'
+        }
+    }
+}
