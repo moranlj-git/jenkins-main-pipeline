@@ -9,7 +9,10 @@ pipeline {
         stage('Préparation') {
             steps {
                 echo 'Création de l’environnement virtuel'
-                sh 'python3 -m venv $VENV_DIR'
+		sh '''
+		    sudo apt install python3-venv
+                    python3 -m venv $VENV_DIR
+		'''
             }
         }
 
@@ -18,8 +21,8 @@ pipeline {
                 echo 'Activation et installation des dépendances'
                 sh '''
                     source $VENV_DIR/bin/activate
-                    pip install --upgrade pip
-                    pip install -r requirements.txt
+                    sudo pip install --upgrade pip
+                    sudo pip install -r requirements.txt
                 '''
             }
         }
