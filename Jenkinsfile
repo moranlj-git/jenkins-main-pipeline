@@ -17,7 +17,7 @@ pipeline {
             steps {
                 echo 'Activation et installation des dépendances'
                 sh '''
-                    source $VENV_DIR/bin/activate
+                    . $VENV_DIR/bin/activate
                     sudo pip install --upgrade pip
                     sudo pip install -r requirements.txt
                 '''
@@ -28,7 +28,6 @@ pipeline {
             steps {
                 echo 'Exécution du script principal'
                 sh '''
-                    source $VENV_DIR/bin/activate
                     python3 main.py
                     if [ $? -ne 0 ]; then
                       echo "Erreur dans main.py"
